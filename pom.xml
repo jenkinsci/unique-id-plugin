@@ -15,7 +15,7 @@
 
   <scm>
     <connection>scm:git:ssh://github.com/jenkinsci/unique-id-plugin.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/jenkinsci/unique-id-plugin.git</developerConnection>
+    <developerConnection>scm:git:https://github.com/jenkinsci/unique-id-plugin.git</developerConnection>
     <url>https://github.com/jenkinsci/unique-id-plugin</url>
   </scm>
 
