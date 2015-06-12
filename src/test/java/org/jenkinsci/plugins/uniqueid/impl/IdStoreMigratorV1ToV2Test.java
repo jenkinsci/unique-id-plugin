@@ -19,6 +19,11 @@ import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.recipes.LocalData;
 
 import com.cloudbees.hudson.plugins.folder.Folder;
+import hudson.Extension;
+import hudson.model.TopLevelItem;
+import hudson.model.TopLevelItemDescriptor;
+import java.io.IOException;
+import jenkins.model.AbstractTopLevelItem;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
@@ -64,6 +69,16 @@ public class IdStoreMigratorV1ToV2Test {
         checkID(jobWithID.getBuildByNumber(1), "ZGQxMDNhYzUtMTJlOC00YTc4LTgzOT_" + jobWithID.getBuildByNumber(1).getId()); 
         checkID(jobWithID.getBuildByNumber(2), "NGQ0ODM2NjktZGM0OS00MjdkLWE3NT");
     }
+    
+    @Test
+    @Issue("JENKINS-28883")
+    public void migrateUnsupportedType() throws Exception {
+        // Add new item, which is not supported by LegacyIdStore
+        jenkinsRule.jenkins.putItem(new PersistedRootItem(jenkinsRule.jenkins, "Hello"));
+        
+        // Restart and perform migration w/o checking "already migrated" tokens, there should not be failures
+        IdStoreMigratorV1ToV2.performMigration(jenkinsRule.jenkins);
+    }
 
     private static void checkID(PersistenceRoot obj, String expectedID) throws Exception {
         assertThat("Checking " + obj.toString(), IdStore.getId(obj), is(expectedID));
@@ -86,4 +101,26 @@ public class IdStoreMigratorV1ToV2Test {
             assertThat("build.xml for " + obj.toString() + " still contains the ID", string, not(containsString(expectedID)));
         }
     } 
+    
+    public static class PersistedRootItem extends AbstractTopLevelItem {
+        
+        public PersistedRootItem(ItemGroup parent, String name) {
+            super(parent, name);
+        }
+        
+        @Extension
+        public static class DescriptorImpl extends TopLevelItemDescriptor {
+
+            @Override
+            public String getDisplayName() {
+                return "Stub item";
+            }
+
+            @Override
+            public TopLevelItem newInstance(ItemGroup parent, String name) {
+                return new PersistedRootItem(parent, name);
+            }
+            
+        }
+    }
 }
