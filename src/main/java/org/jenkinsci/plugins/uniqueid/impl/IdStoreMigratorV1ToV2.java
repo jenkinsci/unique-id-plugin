@@ -19,6 +19,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
+import org.jenkinsci.plugins.uniqueid.IdStore;
+import static org.jenkinsci.plugins.uniqueid.impl.LegacyIdStore.forClass;
 
 import org.jenkinsci.plugins.uniqueid.implv2.PersistenceRootIdStore;
 import org.kohsuke.accmod.Restricted;
@@ -79,18 +81,30 @@ public class IdStoreMigratorV1ToV2 {
         t.start();
     }
 
-   static void migrate(PersistenceRoot pr) {
+    /**
+     * Migrates an item from {@link LegacyIdStore} to {@link IdStore}.
+     * @param pr Item to be migrated
+     * @throws IDStoreMigrationException Entry migration failure
+     */
+    static void migrate(PersistenceRoot pr) throws IDStoreMigrationException {
        LOGGER.log(Level.FINE, "migrating {0}" , pr);
        try {
-            String id = LegacyIdStore.getId(pr);
-            if (id != null) {
-                PersistenceRootIdStore.create(pr, id);
-                LegacyIdStore.removeId(pr);
+            final LegacyIdStore store = forClass(pr.getClass());
+            if (store != null) { // Migrate supported types only
+                String id = store.get(pr);
+                if (id != null) {
+                    PersistenceRootIdStore.create(pr, id);
+                    LegacyIdStore.removeId(pr);
+                } 
             }
        } catch (IOException ex) {
            // need to rethrow (but add some context first) otherwise the migration will continue to run
            // and it will not have migrated everything :-(
            throw new IDStoreMigrationException("Failure whilst migrating " + pr.toString(), ex);
+       } catch (IllegalStateException ex) {
+           throw new IDStoreMigrationException("Invalid converter has been selected for "+pr+". Please submit a bug", ex);
+       } catch (Throwable th) { // We process everything to propagate the error correctly
+           throw new IDStoreMigrationException("Failure whilst migrating " + pr.toString(), th);
        }
     }
 
