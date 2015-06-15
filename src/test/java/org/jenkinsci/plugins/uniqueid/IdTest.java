@@ -4,18 +4,21 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Project;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hamcrest.core.Is;
 import org.junit.Rule;
 import org.junit.Test;
+import org.jvnet.hudson.test.Issue;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import com.cloudbees.hudson.plugins.folder.Folder;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -80,5 +83,20 @@ public class IdTest {
             ids.add(IdStore.getId(f));
         }
         assertThat(ids, hasSize(200));
+    }
+    
+    @Test
+    @Issue("JENKINS-28913")
+    public void correctJenkins28913() throws Exception {
+        Project<?, ?> p = jenkinsRule.createFreeStyleProject();
+        File f = new File(p.getRootDir(), "unique-id.txt");
+        assertThat(f.exists(), is(false));
+        
+        assertThat("no Id yet made", IdStore.getId(p), nullValue());
+        
+        assertThat(f.createNewFile(), is(true));
+        
+        String id = IdStore.getId(p);
+        assertThat("id file was empty should have been re-gernerated", id.length(), greaterThan(20));
     }
 }
