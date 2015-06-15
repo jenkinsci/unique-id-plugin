@@ -65,7 +65,7 @@ public class PersistenceRootIdStore extends IdStore<PersistenceRoot> {
                 String str = FileUtils.readFileToString(f, StandardCharsets.UTF_8);
                 if (str.length() == 0) {
                     // regenerate it JENKINS-28913
-                    f.delete();
+                    Files.deleteIfExists(f.toPath());
                     make(object);
                     str = FileUtils.readFileToString(f, StandardCharsets.UTF_8);
                 }
