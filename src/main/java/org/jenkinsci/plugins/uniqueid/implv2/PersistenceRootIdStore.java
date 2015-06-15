@@ -42,7 +42,7 @@ public class PersistenceRootIdStore extends IdStore<PersistenceRoot> {
             File tmp = null;
             try {
                 tmp = File.createTempFile(".unique-id_", ".tmp", object.getRootDir());
-                FileUtils.writeStringToFile(f, IdStore.generateUniqueID(), StandardCharsets.UTF_8);
+                FileUtils.writeStringToFile(tmp, IdStore.generateUniqueID(), StandardCharsets.UTF_8);
                 try {
                     Files.move(tmp.toPath(), f.toPath(), StandardCopyOption.ATOMIC_MOVE);
                 }
@@ -62,7 +62,13 @@ public class PersistenceRootIdStore extends IdStore<PersistenceRoot> {
         File f = new File(object.getRootDir(), ID_FILE);
         if (f.exists() && f.canRead()) {
             try {
-                return FileUtils.readFileToString(f, StandardCharsets.UTF_8);
+                String str = FileUtils.readFileToString(f, StandardCharsets.UTF_8);
+                if (str.length() == 0) {
+                    // regenerate it.
+                    make(object);
+                    str = FileUtils.readFileToString(f, StandardCharsets.UTF_8);
+                }
+                return str;
             } catch (IOException ex) {
                 LOGGER.log(Level.WARNING, "Failed to retrieve unique ID for " + object.toString(), ex);
             }
