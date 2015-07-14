@@ -1,16 +1,14 @@
 package org.jenkinsci.plugins.uniqueid;
 
 import hudson.ExtensionPoint;
-
 import jenkins.model.Jenkins;
+import org.apache.commons.codec.binary.Base64;
 
-import java.io.UnsupportedEncodingException;
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
-
-import javax.annotation.Nullable;
-
-import org.apache.commons.codec.binary.Base64;
 
 /**
  * An abstraction to persistently store and retrieve unique id's
@@ -44,7 +42,7 @@ public abstract class IdStore<T> implements ExtensionPoint {
 
     /**
      * Get the id for this given object.
-     * @param object
+     * @param object the object.
      * @return the id or {@code null} if none assigned.
      */
     @Nullable
@@ -55,10 +53,10 @@ public abstract class IdStore<T> implements ExtensionPoint {
     }
 
     /**
-     * Retrieve an {@link IdStore} for the given type
-     * @param clazz
-     * @param <C>
-     * @return the store which supports the type, or null if none
+     * Retrieve an {@link IdStore} for the given type.
+     * @param clazz the type of object.
+     * @param <C> the type of object.
+     * @return the store which supports the type, or {@code null} if none.
      */
     @Nullable
     public static <C> IdStore<C> forClass(Class<C> clazz) {
@@ -96,6 +94,17 @@ public abstract class IdStore<T> implements ExtensionPoint {
         } else {
             return store.get(object);
         }
+    }
+
+    /**
+     * Returns the generic filename that a store should use for storing the unique id.
+     *
+     * @return the generic filename.
+     * @since 2.1.0
+     */
+    @Nonnull
+    public static String fileName() {
+        return "unique-id.txt";
     }
 
     /**
