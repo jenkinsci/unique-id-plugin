@@ -14,6 +14,8 @@ import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
 import org.jenkinsci.plugins.uniqueid.IdStore;
+import org.jenkinsci.plugins.uniqueid.impl.FolderIdStore;
+import org.jenkinsci.plugins.uniqueid.impl.JobIdStore;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
 
