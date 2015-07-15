@@ -60,7 +60,7 @@
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>annotations</artifactId>
       <version>3.0.0</version>
-      <type>jar</type>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
@@ -102,6 +102,14 @@
           <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
           <failOnError>false</failOnError>
         </configuration>
+        <executions>
+          <execution>
+            <phase>verify</phase> 
+            <goals>
+              <goal>check</goal> 
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
