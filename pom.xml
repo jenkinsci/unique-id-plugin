@@ -104,6 +104,7 @@
         </configuration>
         <executions>
           <execution>
+            <id>run-findbugs</id>
             <phase>verify</phase> 
             <goals>
               <goal>check</goal> 
