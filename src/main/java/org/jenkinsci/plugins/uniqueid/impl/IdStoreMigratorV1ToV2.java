@@ -65,14 +65,7 @@ public class IdStoreMigratorV1ToV2 {
         List<Item> allItems = jenkins.getAllItems();
 
         for (Item item : allItems) {
-            // can only be Folder or Job here (not a run) - and these both implement PersistenceRoot
-            if (item instanceof PersistenceRoot) {
-                migrate((PersistenceRoot) item);
-            }
-            else {
-                LOGGER.log(Level.WARNING, "Expected item of type Folder or Job which implement PersistenceRoot, but got a {0} so can not migrate the IdStore for this item",
-                           item.getClass().getName());
-            }
+            migrate(item);
         }
         LOGGER.log(Level.INFO, "migration of unique IDs for Jobs and Folders complete - will continue to process Runs in the background.");
 
@@ -156,8 +149,8 @@ public class IdStoreMigratorV1ToV2 {
             }
             // all done...
             final long duration = System.currentTimeMillis() - startTime;
-            final long minutes = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - startTime);
-            final long seconds = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - startTime - TimeUnit.MINUTES.toMillis(minutes));
+            final long minutes = TimeUnit.MILLISECONDS.toMinutes(duration);
+            final long seconds = TimeUnit.MILLISECONDS.toSeconds(duration - TimeUnit.MINUTES.toMillis(minutes));
 
             LOGGER.log(Level.INFO, "Finished unique-id migration of builds in {0} minutes {1} seconds.  Processed {2} runs from {3} jobs.", 
                        new Object[] {minutes, seconds,  migratedBuilds, migratedJobs});

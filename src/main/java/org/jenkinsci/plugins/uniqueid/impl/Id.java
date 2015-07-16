@@ -5,6 +5,7 @@ import jenkins.model.RunAction2;
 import hudson.model.Action;
 import hudson.model.Actionable;
 import hudson.model.Run;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.codec.binary.Base64;
 import org.kohsuke.accmod.Restricted;
@@ -28,7 +29,8 @@ class Id implements Action , RunAction2 {
     private final String id;
 
     protected Id() {
-        this.id = Base64.encodeBase64String(UUID.randomUUID().toString().getBytes()).substring(0, 30);
+        this.id = Base64.encodeBase64String(UUID.randomUUID().toString()
+                .getBytes(StandardCharsets.UTF_8)).substring(0, 30);
     }
 
     public String getIconFileName() {
