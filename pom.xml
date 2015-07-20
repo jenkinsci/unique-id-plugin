@@ -14,9 +14,9 @@
   <url>http://wiki.jenkins-ci.org/display/JENKINS/Unique+Id+Plugin</url>
 
   <scm>
-    <connection>scm:git:ssh://github.com/jenkinsci/unique-id-plugin.git</connection>
-    <developerConnection>scm:git:https://github.com/jenkinsci/unique-id-plugin.git</developerConnection>
-    <url>https://github.com/jenkinsci/unique-id-plugin</url>
+    <connection>scm:git:git://github.com/jenkinsci/unique-id-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:jenkinsci/unique-id-plugin.git</developerConnection>
+    <url>http://github.com/jenkinsci/unique-id-plugin</url>
     <tag>HEAD</tag>
   </scm>
 
