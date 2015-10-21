@@ -36,8 +36,8 @@ public class IdStoreMigratorV1ToV2 {
     
     private static Logger LOGGER = Logger.getLogger(IdStoreMigratorV1ToV2.class.getName());
 
-    /* package */ static final String MARKER_FILE_NAME = "unique-id-migration.txt";
-
+    private static final String MARKER_FILE_NAME = "unique-id-migration.txt";
+    
     /**
      * Migrates any IDs stored in Folder/Job/Run configuration 
      * @throws IOException
@@ -99,6 +99,20 @@ public class IdStoreMigratorV1ToV2 {
        } catch (Throwable th) { // We process everything to propagate the error correctly
            throw new IDStoreMigrationException("Failure whilst migrating " + pr.toString(), th);
        }
+    }
+
+    static void saveIfNeeded(Run run) throws IOException {
+        Jenkins jenkins = Jenkins.getInstance();
+        if (jenkins == null) {
+            throw new IllegalStateException("Jenkins is null, so it is impossible to migrate the ID");
+        }
+        File marker = new File(jenkins.getRootDir(), MARKER_FILE_NAME);
+        if (marker.exists()) {
+            // The background migration thread already finished (all builds have been already loaded at least once),
+            // so this is a belated load on a run that was not migrated in the main process (for some reason).
+            // Let's save it now.
+            run.save();
+        }
     }
 
    /**
