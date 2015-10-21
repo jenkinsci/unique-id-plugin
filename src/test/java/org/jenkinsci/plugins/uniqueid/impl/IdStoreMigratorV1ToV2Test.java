@@ -77,8 +77,7 @@ public class IdStoreMigratorV1ToV2Test {
         Jenkins jenkins = jenkinsRule.jenkins;
         assertThat("All jobs loaded correctly", jenkins.getAllItems(), hasSize(2));
 
-        Folder folderWithID = jenkins.getItem("folderWithID", jenkins, Folder.class);
-        Job jobWithID = jenkins.getItem("jobWithID", (ItemGroup)folderWithID, Job.class);
+        Job jobWithID = jenkins.getItemByFullName("folderWithID/jobWithID", Job.class);
         // Build #2 has a LongLoadingAction which simulates an action that blocks in the onLoad method
         // This kind on delays causes issues on startup with version 2.1.0 (see issue linked to this test)
         checkID(jobWithID.getBuildByNumber(2), "NGQ0ODM2NjktZGM0OS00MjdkLWE3NT");
