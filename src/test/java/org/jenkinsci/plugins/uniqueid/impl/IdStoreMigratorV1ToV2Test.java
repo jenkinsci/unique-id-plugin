@@ -43,7 +43,7 @@ public class IdStoreMigratorV1ToV2Test {
     public void testMigration() throws Exception {
         Jenkins jenkins = jenkinsRule.jenkins;
         assertThat("All jobs loaded correctly", jenkins.getAllItems(), hasSize(4));
-        
+
         Folder folderNoID = jenkins.getItem("folderNoID", jenkins, Folder.class);
         Folder folderWithID = jenkins.getItem("folderWithID", jenkins, Folder.class);
         
@@ -54,7 +54,7 @@ public class IdStoreMigratorV1ToV2Test {
         assertThat(folderWithID, notNullValue());
         assertThat(jobNoID, notNullValue());
         assertThat(jobWithID, notNullValue());
-        
+
         checkID(folderNoID, null);
         checkID(folderWithID, "YzUxN2JiZTYtNGVhZS00NDQxLTg5NT");
         
@@ -66,10 +66,24 @@ public class IdStoreMigratorV1ToV2Test {
         checkID(jobNoID.getBuildByNumber(2), null);
         
         // build 1 had no id so its generated on the fly from the parent
-        checkID(jobWithID.getBuildByNumber(1), "ZGQxMDNhYzUtMTJlOC00YTc4LTgzOT_" + jobWithID.getBuildByNumber(1).getId()); 
+        checkID(jobWithID.getBuildByNumber(1), "ZGQxMDNhYzUtMTJlOC00YTc4LTgzOT_" + jobWithID.getBuildByNumber(1).getId());
         checkID(jobWithID.getBuildByNumber(2), "NGQ0ODM2NjktZGM0OS00MjdkLWE3NT");
     }
-    
+
+    @Test
+    @Issue("JENKINS-30424")
+    @LocalData
+    public void testMigrationLongLoadingBuilds() throws Exception {
+        Jenkins jenkins = jenkinsRule.jenkins;
+        assertThat("All jobs loaded correctly", jenkins.getAllItems(), hasSize(2));
+
+        Folder folderWithID = jenkins.getItem("folderWithID", jenkins, Folder.class);
+        Job jobWithID = jenkins.getItem("jobWithID", (ItemGroup)folderWithID, Job.class);
+        // Build #2 has a LongLoadingAction which simulates an action that blocks in the onLoad method
+        // This kind on delays causes issues on startup with version 2.1.0 (see issue linked to this test)
+        checkID(jobWithID.getBuildByNumber(2), "NGQ0ODM2NjktZGM0OS00MjdkLWE3NT");
+    }
+
     @Test
     @Issue("JENKINS-28883")
     public void migrateUnsupportedType() throws Exception {

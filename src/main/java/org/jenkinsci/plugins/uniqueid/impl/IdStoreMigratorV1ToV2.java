@@ -36,8 +36,8 @@ public class IdStoreMigratorV1ToV2 {
     
     private static Logger LOGGER = Logger.getLogger(IdStoreMigratorV1ToV2.class.getName());
 
-    private static final String MARKER_FILE_NAME = "unique-id-migration.txt";
-    
+    /* package */ static final String MARKER_FILE_NAME = "unique-id-migration.txt";
+
     /**
      * Migrates any IDs stored in Folder/Job/Run configuration 
      * @throws IOException
@@ -136,8 +136,16 @@ public class IdStoreMigratorV1ToV2 {
                         // touch something in the build just to force loading incase it gets more lazy in the future.
                         Object r = iterator.next();
                         if (r != null && r instanceof Run) {
-                            ((Run)r).getAllActions();
+                            Run run = ((Run) r);
+                            run.getAllActions();
+                            try {
+                                // Save the run here so its storage is updated (after being migrated in Id.onLoad(Run))
+                                run.save();
+                            } catch (IOException e) {
+                                LOGGER.log(Level.WARNING, "Can not save build {0} on job {1}", new Object[] { run.getNumber(), job.getName() });
+                            }
                         }
+
                         migratedBuilds++;
                     }
                 }
