@@ -156,7 +156,7 @@ public class IdStoreMigratorV1ToV2 {
                                 // Save the run here so its storage is updated (after being migrated in Id.onLoad(Run))
                                 run.save();
                             } catch (IOException e) {
-                                LOGGER.log(Level.WARNING, "Can not save build {0} on job {1}", new Object[] { run.getNumber(), job.getName() });
+                                LOGGER.log(Level.WARNING, String.format("Can not save build %s on job %s", run.getNumber(), job.getName()), e);
                             }
                         }
 
