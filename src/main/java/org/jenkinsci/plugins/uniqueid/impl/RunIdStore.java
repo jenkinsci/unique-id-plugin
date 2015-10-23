@@ -30,7 +30,7 @@ public class RunIdStore extends LegacyIdStore<Run> {
         List<Id> ids = run.getActions(Id.class);
         if (!ids.isEmpty()) {
             actionList.removeAll(ids);
-            run.save();
+            IdStoreMigratorV1ToV2.saveIfNeeded(run);
         }
     }
 

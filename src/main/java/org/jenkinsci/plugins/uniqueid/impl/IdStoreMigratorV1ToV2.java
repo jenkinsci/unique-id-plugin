@@ -101,6 +101,20 @@ public class IdStoreMigratorV1ToV2 {
        }
     }
 
+    static void saveIfNeeded(Run run) throws IOException {
+        Jenkins jenkins = Jenkins.getInstance();
+        if (jenkins == null) {
+            throw new IllegalStateException("Jenkins is null, so it is impossible to migrate the ID");
+        }
+        File marker = new File(jenkins.getRootDir(), MARKER_FILE_NAME);
+        if (marker.exists()) {
+            // The background migration thread already finished (all builds have been already loaded at least once),
+            // so this is a belated load on a run that was not migrated in the main process (for some reason).
+            // Let's save it now.
+            run.save();
+        }
+    }
+
    /**
     * Exception to indicate a failure to migrate the IDStore.
     */
@@ -136,8 +150,16 @@ public class IdStoreMigratorV1ToV2 {
                         // touch something in the build just to force loading incase it gets more lazy in the future.
                         Object r = iterator.next();
                         if (r != null && r instanceof Run) {
-                            ((Run)r).getAllActions();
+                            Run run = ((Run) r);
+                            run.getAllActions();
+                            try {
+                                // Save the run here so its storage is updated (after being migrated in Id.onLoad(Run))
+                                run.save();
+                            } catch (IOException e) {
+                                LOGGER.log(Level.WARNING, String.format("Can not save build %s on job %s", run.getNumber(), job.getName()), e);
+                            }
                         }
+
                         migratedBuilds++;
                     }
                 }
