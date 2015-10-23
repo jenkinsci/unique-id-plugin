@@ -36,7 +36,7 @@ public class IdStoreMigratorV1ToV2 {
     
     private static Logger LOGGER = Logger.getLogger(IdStoreMigratorV1ToV2.class.getName());
 
-    private static final String MARKER_FILE_NAME = "unique-id-migration.txt";
+    /* package */ static final String MARKER_FILE_NAME = "unique-id-migration.txt";
     
     /**
      * Migrates any IDs stored in Folder/Job/Run configuration 

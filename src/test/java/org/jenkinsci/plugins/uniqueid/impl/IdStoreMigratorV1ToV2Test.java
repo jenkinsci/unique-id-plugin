@@ -22,7 +22,6 @@ import com.cloudbees.hudson.plugins.folder.Folder;
 import hudson.Extension;
 import hudson.model.TopLevelItem;
 import hudson.model.TopLevelItemDescriptor;
-import java.io.IOException;
 import jenkins.model.AbstractTopLevelItem;
 
 import static org.hamcrest.Matchers.containsString;
@@ -55,6 +54,8 @@ public class IdStoreMigratorV1ToV2Test {
         assertThat(jobNoID, notNullValue());
         assertThat(jobWithID, notNullValue());
 
+        waitForMarkerFile();
+
         checkID(folderNoID, null);
         checkID(folderWithID, "YzUxN2JiZTYtNGVhZS00NDQxLTg5NT");
         
@@ -80,6 +81,7 @@ public class IdStoreMigratorV1ToV2Test {
         Job jobWithID = jenkins.getItemByFullName("folderWithID/jobWithID", Job.class);
         // Build #2 has a LongLoadingAction which simulates an action that blocks in the onLoad method
         // This kind on delays causes issues on startup with version 2.1.0 (see issue linked to this test)
+        waitForMarkerFile();
         checkID(jobWithID.getBuildByNumber(2), "NGQ0ODM2NjktZGM0OS00MjdkLWE3NT");
     }
 
@@ -114,7 +116,19 @@ public class IdStoreMigratorV1ToV2Test {
             assertThat("build.xml for " + obj.toString() + " still contains the ID", string, not(containsString(expectedID)));
         }
     } 
-    
+
+    public void waitForMarkerFile() throws InterruptedException {
+        Jenkins jenkins = jenkinsRule.jenkins;
+        File marker = new File(jenkins.getRootDir(), IdStoreMigratorV1ToV2.MARKER_FILE_NAME);
+        File home = jenkins.getRootDir();
+        synchronized (home) {
+            while (!marker.exists()) {
+                System.out.println("Waiting for migration process to end...");
+                home.wait(1000);
+            }
+        }
+    }
+
     public static class PersistedRootItem extends AbstractTopLevelItem {
         
         public PersistedRootItem(ItemGroup parent, String name) {
