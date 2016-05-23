@@ -60,9 +60,12 @@ public abstract class IdStore<T> implements ExtensionPoint {
      */
     @Nullable
     public static <C> IdStore<C> forClass(Class<C> clazz) {
-        for (IdStore store : Jenkins.getInstance().getExtensionList(IdStore.class)) {
-            if (store.supports(clazz)) {
-                return store;
+        final Jenkins jenkins = Jenkins.getInstance();
+        if (jenkins != null) {
+            for (IdStore store : jenkins.getExtensionList(IdStore.class)) {
+                if (store.supports(clazz)) {
+                    return store;
+                }
             }
         }
         return null;

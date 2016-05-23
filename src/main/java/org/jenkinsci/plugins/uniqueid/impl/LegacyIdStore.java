@@ -61,9 +61,12 @@ public abstract class LegacyIdStore<T> implements ExtensionPoint {
      */
     @Nullable
     public static <C> LegacyIdStore<C> forClass(Class<C> clazz) {
-        for (LegacyIdStore store : Jenkins.getInstance().getExtensionList(LegacyIdStore.class)) {
-            if (store.supports(clazz)) {
-                return store;
+        final Jenkins jenkins = Jenkins.getInstance();
+        if (jenkins != null) {
+            for (LegacyIdStore store : jenkins.getExtensionList(LegacyIdStore.class)) {
+                if (store.supports(clazz)) {
+                    return store;
+                }
             }
         }
         return null;

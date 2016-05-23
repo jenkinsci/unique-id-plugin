@@ -20,7 +20,7 @@ import com.cloudbees.hudson.plugins.folder.Folder;
 
 /**
  * Stores ids for folders as a {@link FolderIdProperty}
- * @deprecated {@see PersistenceRootIdStore}
+ * @deprecated Use {@link org.jenkinsci.plugins.uniqueid.implv2.PersistenceRootIdStore}
  */
 @Extension(optional = true)
 @Deprecated
