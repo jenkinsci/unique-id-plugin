@@ -18,7 +18,7 @@ import org.kohsuke.accmod.restrictions.NoExternalUse;
 
 /**
  * Stores ids for jobs in {@link JobIdProperty}
- * @deprecated {@see PersistenceRootIdStore}
+ * @deprecated Use {@link org.jenkinsci.plugins.uniqueid.implv2.PersistenceRootIdStore}
  */
 @Extension
 @Deprecated

@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>1.554.3</version><!-- which version of Jenkins is this plugin built against? -->
+    <version>2.11</version>
   </parent>
 
   <groupId>org.jenkins-ci.plugins</groupId>
@@ -24,21 +24,21 @@
   </scm>
 
   <properties>
-     <maven.compiler.source>1.7</maven.compiler.source>
-     <maven.compiler.target>1.7</maven.compiler.target>
+    <jenkins.version>1.615</jenkins.version>
+    <java.level>7</java.level>
   </properties>
 
   <!-- get every artifact through repo.jenkins-ci.org, which proxies all the artifacts that we need -->
   <repositories>
     <repository>
       <id>repo.jenkins-ci.org</id>
-      <url>http://repo.jenkins-ci.org/public/</url>
+      <url>https://repo.jenkins-ci.org/public/</url>
     </repository>
   </repositories>
   <pluginRepositories>
     <pluginRepository>
       <id>repo.jenkins-ci.org</id>
-      <url>http://repo.jenkins-ci.org/public/</url>
+      <url>https://repo.jenkins-ci.org/public/</url>
     </pluginRepository>
   </pluginRepositories>
 
@@ -84,35 +84,12 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-release-plugin</artifactId>
-        <version>2.5.1</version>
-      </plugin>
-      <plugin>
         <groupId>org.jenkins-ci.tools</groupId>
         <artifactId>maven-hpi-plugin</artifactId>
         <extensions>true</extensions>
         <configuration>
           <compatibleSinceVersion>2.0</compatibleSinceVersion>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>findbugs-maven-plugin</artifactId>
-        <version>3.0.1</version>
-        <configuration>
-          <xmlOutput>true</xmlOutput>
-          <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
-          <failOnError>false</failOnError>
-        </configuration>
-        <executions>
-          <execution>
-            <id>run-findbugs</id>
-            <phase>verify</phase> 
-            <goals>
-              <goal>check</goal> 
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
