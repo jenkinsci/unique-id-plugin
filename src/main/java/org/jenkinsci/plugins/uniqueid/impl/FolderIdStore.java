@@ -1,5 +1,8 @@
 package org.jenkinsci.plugins.uniqueid.impl;
 
+import com.cloudbees.hudson.plugins.folder.AbstractFolder;
+import com.cloudbees.hudson.plugins.folder.AbstractFolderProperty;
+import com.cloudbees.hudson.plugins.folder.AbstractFolderPropertyDescriptor;
 import hudson.Extension;
 import hudson.model.Action;
 import hudson.model.Actionable;
@@ -32,16 +35,19 @@ public class FolderIdStore extends LegacyIdStore<Folder> {
 
     @Override
     public void remove(Folder folder) throws IOException {
-        DescribableList<FolderProperty<?>,FolderPropertyDescriptor> properties = folder.getProperties();
-
-        for (Iterator<FolderProperty<?>> itr = properties.iterator(); itr.hasNext(); ) {
-            FolderProperty<?> prop = itr.next();
+        DescribableList<AbstractFolderProperty<?>,AbstractFolderPropertyDescriptor> properties = folder.getProperties();
+        boolean needSave = false;
+        for (Iterator<AbstractFolderProperty<?>> itr = properties.iterator(); itr.hasNext(); ) {
+            AbstractFolderProperty<?> prop = itr.next();
 
             if (prop instanceof FolderIdProperty) {
                 itr.remove();
+                needSave = true;
             }
         }
-        folder.save();
+        if (needSave) {
+            folder.save();
+        }
     }
 
     @Override
@@ -77,7 +83,7 @@ public class FolderIdStore extends LegacyIdStore<Folder> {
             }
 
             @Override
-            public boolean isApplicable(Class<? extends Folder> containerType) {
+            public boolean isApplicable(Class<? extends AbstractFolder> containerType) {
                 return false;
             }
         }
