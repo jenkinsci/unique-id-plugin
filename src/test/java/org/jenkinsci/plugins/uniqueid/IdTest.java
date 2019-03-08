@@ -2,6 +2,8 @@ package org.jenkinsci.plugins.uniqueid;
 
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.model.FreeStyleBuild;
+import hudson.model.FreeStyleProject;
 import hudson.model.Project;
 
 import java.io.File;
@@ -30,11 +32,11 @@ public class IdTest {
 
     @Test
     public void project() throws Exception {
-        Project p = jenkinsRule.createFreeStyleProject();
+        FreeStyleProject p = jenkinsRule.createFreeStyleProject();
         assertNull(IdStore.getId(p));
         IdStore.makeId(p);
         String id = IdStore.getId(p);
-        AbstractBuild build = jenkinsRule.buildAndAssertSuccess(p);
+        FreeStyleBuild build = jenkinsRule.buildAndAssertSuccess(p);
         
         // to be unique we need not null and at least a minimum size.
         assertThat("project id", id, notNullValue());
