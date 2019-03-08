@@ -8,7 +8,7 @@ Read more: [https://wiki.jenkins-ci.org/display/JENKINS/Unique+ID+Plugin]
 License
 -------
 
-    Copyright 2014 CloudBees, Inc.
+    Copyright 2014-2019 CloudBees, Inc.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
