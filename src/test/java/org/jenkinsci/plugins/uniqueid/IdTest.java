@@ -7,9 +7,12 @@ import hudson.model.FreeStyleProject;
 import hudson.model.Project;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
+import hudson.model.User;
 import org.hamcrest.core.Is;
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,6 +25,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
@@ -70,6 +74,17 @@ public class IdTest {
 
         jenkinsRule.jenkins.reload();
         assertEquals(id, IdStore.getId(jenkinsRule.jenkins.getItemByFullName("folder", Folder.class)));
+    }
+
+    @Test
+    public void user() throws Exception {
+        User user = User.get("omgfakeuser", true, Collections.emptyMap());
+        String id = IdStore.getId(user);
+
+        assertNotNull(id);
+
+        jenkinsRule.jenkins.reload();
+        assertEquals(id, IdStore.getId(Objects.requireNonNull(User.get("omgfakeuser", false, Collections.emptyMap()))));
     }
     
     @Test
