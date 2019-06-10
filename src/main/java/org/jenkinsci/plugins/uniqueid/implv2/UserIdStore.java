@@ -11,6 +11,7 @@ import org.jenkinsci.plugins.uniqueid.IdStore;
  * Manages Unique IDs for User.
  * We could make a unique file for every user. But a user already has a jenkins wide unique id
  * that we can just tap into
+ * @since TODO
  */
 @Extension(ordinal=1) // needs to take priority over the PersistenceRootIdStore
 public class UserIdStore extends IdStore<User> {
