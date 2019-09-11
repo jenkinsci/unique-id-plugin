@@ -79,6 +79,7 @@ public class IdTest {
     @Test
     public void user() throws Exception {
         User user = User.get("omgfakeuser", true, Collections.emptyMap());
+        user.save();
         String id = IdStore.getId(user);
 
         assertNotNull(id);
