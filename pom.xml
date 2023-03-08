@@ -5,29 +5,59 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>3.39</version>
+    <version>4.55</version>
+    <relativePath />
   </parent>
 
   <groupId>org.jenkins-ci.plugins</groupId>
   <artifactId>unique-id</artifactId>
-  <version>2.2.1-SNAPSHOT</version>
+  <version>${revision}.${changelist}</version>
   <packaging>hpi</packaging>
 
   <name>Unique ID Library Plugin</name>
   <url>https://wiki.jenkins.io/display/JENKINS/Unique+Id+Plugin</url>
 
   <scm>
-    <connection>scm:git:git://github.com/jenkinsci/unique-id-plugin.git</connection>
-    <developerConnection>scm:git:git@github.com:jenkinsci/unique-id-plugin.git</developerConnection>
-    <url>http://github.com/jenkinsci/unique-id-plugin</url>
-    <tag>HEAD</tag>
+    <connection>scm:git:https://github.com/${gitHubRepo}.git</connection>
+    <developerConnection>scm:git:git@github.com:${gitHubRepo}.git</developerConnection>
+    <url>https://github.com/${gitHubRepo}</url>
+    <tag>${scmTag}</tag>
   </scm>
 
   <properties>
-    <jenkins.version>2.60.3</jenkins.version>
-    <java.level>8</java.level>
+    <revision>2</revision>
+    <changelist>>999999-SNAPSHOT</changelist>
+    <gitHubRepo>jenkinsci/unique-id-plugin</gitHubRepo>
+    <baseline>2.387</baseline>
+    <bom>bom-${baseline}.x</bom>
+    <jenkins.version>${baseline}.1</jenkins.version>
     <hpi.compatibleSinceVersion>2.0</hpi.compatibleSinceVersion>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.jenkins.tools.bom</groupId>
+        <artifactId>${bom}</artifactId>
+        <version>1834.vc26f653a_a_b_10</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jenkins-ci.plugins</groupId>
+      <artifactId>cloudbees-folder</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.jenkins-ci.plugins</groupId>
+      <artifactId>credentials</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
   <!-- get every artifact through repo.jenkins-ci.org, which proxies all the artifacts that we need -->
   <repositories>
@@ -43,42 +73,4 @@
     </pluginRepository>
   </pluginRepositories>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.jenkins-ci.plugins</groupId>
-      <artifactId>cloudbees-folder</artifactId>
-      <version>5.0</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.jenkins-ci</groupId>
-      <artifactId>test-annotations</artifactId>
-      <version>1.2</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-core</artifactId>
-      <version>1.3</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jenkins-ci.plugins</groupId>
-      <artifactId>credentials</artifactId>
-      <version>1.8.3</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>annotations</artifactId>
-      <version>3.0.0</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
 </project>
