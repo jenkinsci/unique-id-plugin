@@ -14,15 +14,12 @@ import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
 import org.jenkinsci.plugins.uniqueid.IdStore;
-import org.jenkinsci.plugins.uniqueid.impl.FolderIdStore;
-import org.jenkinsci.plugins.uniqueid.impl.JobIdStore;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
 
 
 /**
- * The {@link PersistenceRootIdStore} allows the storing of a Unique ID for any PersistenceRoot item. This replaces the
- * need for {@link FolderIdStore}, {@link JobIdStore} and {@link RunIdStore}
+ * The {@link PersistenceRootIdStore} allows the storing of a Unique ID for any PersistenceRoot item.
  */
 @Extension
 public class PersistenceRootIdStore extends IdStore<PersistenceRoot> {
