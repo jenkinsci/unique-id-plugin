@@ -1,12 +1,12 @@
 package org.jenkinsci.plugins.uniqueid;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.ExtensionPoint;
 import jenkins.model.Jenkins;
 import org.apache.commons.codec.binary.Base64;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
@@ -105,7 +105,7 @@ public abstract class IdStore<T> implements ExtensionPoint {
      * @return the generic filename.
      * @since 2.1.0
      */
-    @Nonnull
+    @NonNull
     public static String fileName() {
         return "unique-id.txt";
     }
